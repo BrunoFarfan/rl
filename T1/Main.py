@@ -41,18 +41,21 @@ if __name__ == "__main__":
         description="Run bandit experiments with optional parts."
     )
     parser.add_argument(
+        "-a",
         "--no-parte-a",
         action="store_false",
         dest="parte_a",
         help="Disable SimpleAgent & RandomAgent experiments."
     )
     parser.add_argument(
+        "-c",
         "--no-parte-c",
         action="store_false",
         dest="parte_c",
         help="Disable Optimistic vs. Realistic experiments."
     )
     parser.add_argument(
+        "-f",
         "--no-parte-f",
         action="store_false",
         dest="parte_f",
@@ -113,10 +116,10 @@ if __name__ == "__main__":
         print("Running Gradient Bandit experiments...")
 
         agents_to_run = [
-            (GradientBanditAgent, "alpha = 0.1$, with baseline", {"alpha": 0.1, "use_baseline": True}),
-            (GradientBanditAgent, "alpha = 0.4$, with baseline", {"alpha": 0.4, "use_baseline": True}),
-            (GradientBanditAgent, "alpha = 0.1$, without baseline", {"alpha": 0.1, "use_baseline": False}),
-            (GradientBanditAgent, "alpha = 0.4$, without baseline", {"alpha": 0.4, "use_baseline": False}),
+            (GradientBanditAgent, "alpha = 0.1, with baseline", {"alpha": 0.1, "use_baseline": True}),
+            (GradientBanditAgent, "alpha = 0.4, with baseline", {"alpha": 0.4, "use_baseline": True}),
+            (GradientBanditAgent, "alpha = 0.1, without baseline", {"alpha": 0.1, "use_baseline": False}),
+            (GradientBanditAgent, "alpha = 0.4, without baseline", {"alpha": 0.4, "use_baseline": False}),
         ]
 
         for agent_class, agent_name, agent_kwargs in agents_to_run:
@@ -125,7 +128,7 @@ if __name__ == "__main__":
                 agent_class,
                 agent_name,
                 **agent_kwargs,
-                env_mean=4
+                env_mean=0
             )
             results_dict[name] = (avg_rewards, avg_optimal_actions)
 
