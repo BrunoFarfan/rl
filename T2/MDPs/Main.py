@@ -1,6 +1,10 @@
 import random
 
 from Evaluator.ipe import iterative_policy_evaluation
+from Evaluator.value_iteration import value_iteration
+from Evaluator.find_optimal_policies import find_random_subset_of_optimal_policies
+
+from plot.plot_optimal_policies import plot_optimal_policies
 
 from Policies.uniform_policy import uniform_policy
 from Policies.greedy_policy import greedy_policy
@@ -50,7 +54,7 @@ def play_gambler_problem(uniform: bool = False, greedy: bool = False):
         problem = GamblerProblem(p)
         gamma = 1.0
 
-        # Política uniforme
+        # politica uniforme
         policy_uniform = {
             s: uniform_policy(problem, s) for s in problem.states if not problem.is_terminal(s)
         }
@@ -61,7 +65,7 @@ def play_gambler_problem(uniform: bool = False, greedy: bool = False):
                 f"Gambler p: {p}, Uniform V(s0) = " +
                 f"{V_uniform[initial_state]:.3f}, Time = {t:.3f}s"
             )
-        # Política greedy
+        # politica greedy
         policy_greedy = greedy_policy(problem, V_uniform, gamma)
         V_greedy, t = iterative_policy_evaluation(problem, gamma, policy_greedy)
         if greedy:
@@ -77,7 +81,7 @@ def play_grid_problem(uniform: bool = False, greedy: bool = False):
         problem = GridProblem(size)
         gamma = 1.0
 
-        # Política uniforme
+        # politica uniforme
         policy_uniform = {
             s: uniform_policy(problem, s) for s in problem.states if not problem.is_terminal(s)
         }
@@ -89,7 +93,7 @@ def play_grid_problem(uniform: bool = False, greedy: bool = False):
                 f"{V_uniform[initial_state]:.3f}, Time = {t:.3f}s"
             )
 
-        # Política greedy
+        # politica greedy
         policy_greedy = greedy_policy(problem, V_uniform, gamma)
         V_greedy, t = iterative_policy_evaluation(problem, gamma, policy_greedy)
         if greedy:
@@ -150,8 +154,57 @@ def play_problem(problem_type: str, uniform: bool = False, greedy: bool = False)
             )
 
 
-if __name__ == '__main__':
-    play_problem('grid', uniform=False, greedy=True)
-    play_problem('cookie', uniform=False, greedy=True)
-    play_problem('gambler', uniform=False, greedy=True)
+def play_value_iteration():
+    problems = [
+        ('grid', 1.0, range(3, 11)),
+        ('cookie', 0.99, range(3, 11)),
+        ('gambler', 1.0, [0.25, 0.4, 0.55]),
+    ]
 
+    for problem_type, gamma, param_list in problems:
+        for param in param_list:
+            if problem_type == 'grid':
+                problem = GridProblem(param)
+                label = f"Grid size: {param}"
+            elif problem_type == 'cookie':
+                problem = CookieProblem(param)
+                label = f"Cookie param: {param}"
+            elif problem_type == 'gambler':
+                problem = GamblerProblem(param)
+                label = f"Gambler p: {param}"
+            else:
+                raise ValueError("Invalid problem type.")
+
+            V_opt, pi_opt, t = value_iteration(problem, gamma)
+            initial_state = problem.get_initial_state()
+            print(f"{label}, Optimal V(s0) = {V_opt[initial_state]:.3f}, Time = {t:.3f}s")
+
+
+def analyze_gambler_multiple_optimal_policies(
+        p: float = 0.25,
+        gamma: float = 1.0,
+        save_path: str = None
+    ):
+    problem = GamblerProblem(p)
+
+    # obtener V*
+    V_opt, pi_opt, _ = value_iteration(problem, gamma)
+
+    # encontrar todas las politicas optimas
+    states, all_policies = find_random_subset_of_optimal_policies(problem, V_opt, gamma)
+
+    # graficar
+    plot_optimal_policies(
+        states,
+        all_policies,
+        title=f"Políticas óptimas en GamblerProblem (p={p})",
+        save_path=save_path
+    )
+
+
+if __name__ == '__main__':
+    # play_problem('grid', uniform=False, greedy=True)
+    # play_problem('cookie', uniform=False, greedy=True)
+    # play_problem('gambler', uniform=False, greedy=True)
+    # play_value_iteration()
+    analyze_gambler_multiple_optimal_policies(p=0.55)
