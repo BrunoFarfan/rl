@@ -1,44 +1,26 @@
 import matplotlib.pyplot as plt
 
 
-def plot_blackjack_results(
-        results,
-        eval_every: int,
-        total_episodes: int,
-        filename="blackjack_results.png",
-        save: bool = False,
-    ):
-    x = [1] + list(range(eval_every, total_episodes + 1, eval_every))
-    for i, r in enumerate(results):
-        plt.plot(x, r, label=f"Run {i+1}")
-    plt.xlabel("Episodios")
+def plot_blackjack_results(all_returns, eval_points):
+    plt.figure(figsize=(10, 6))
+    for idx, run_returns in enumerate(all_returns):
+        plt.plot(eval_points, run_returns, label=f'Run {idx + 1}')
+    plt.xlabel("Episodios de entrenamiento")
     plt.ylabel("Retorno promedio")
-    plt.title("Blackjack - Monte Carlo epsilon-soft control")
+    plt.title("Rendimiento de la política greedy durante el entrenamiento")
     plt.legend()
     plt.grid(True)
-
-    if save:
-        plt.savefig(filename)
-
+    plt.tight_layout()
     plt.show()
 
-def plot_cliff_results(
-        results,
-        eval_every: int,
-        total_episodes: int,
-        filename="cliff_results.png",
-        save: bool = False,
-    ):
-    x = [1] + list(range(eval_every, total_episodes + 1, eval_every))
-    for i, r in enumerate(results):
-        plt.plot(x, r, label=f"Run {i+1}")
-    plt.xlabel("Episodios")
-    plt.ylabel("Retorno desde estado inicial")
-    plt.title("Cliff - Monte Carlo epsilon-soft control")
+def plot_cliff_results(all_returns, eval_points):
+    plt.figure(figsize=(10, 6))
+    for idx, run_returns in enumerate(all_returns):
+        plt.plot(eval_points, run_returns, label=f'Run {idx + 1}')
+    plt.xlabel("Episodios de entrenamiento")
+    plt.ylabel("Retorno de una ejecución")
+    plt.title("Rendimiento de la política greedy durante el entrenamiento")
     plt.legend()
     plt.grid(True)
-
-    if save:
-        plt.savefig(filename)
-
+    plt.tight_layout()
     plt.show()

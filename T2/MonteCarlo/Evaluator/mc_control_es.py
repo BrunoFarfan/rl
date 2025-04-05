@@ -1,58 +1,125 @@
 import random
 from collections import defaultdict
+import numpy as np
 from Environments.AbstractEnv import AbstractEnv
 
 
-def update_policy(state, Q, policy, epsilon: float, env: AbstractEnv):
-    actions = list(Q[state].keys())
-    if not actions:
-        actions = env.action_space
-    best_a = max(actions, key=lambda a: Q[state][a])
-    n = len(actions)
-    policy[state] = {a: epsilon / n for a in actions}
-    policy[state][best_a] += 1 - epsilon
+class MonteCarloControl:
+    def __init__(self, env, epsilon=0.1, gamma=1.0):
+        self.env = env
+        self.epsilon = epsilon
+        self.gamma = gamma
+        self.Q = defaultdict(lambda: {a: 0.0 for a in env.action_space})
+        self.returns = defaultdict(list)
+        self.policy = defaultdict(lambda: {a: 1.0 / len(env.action_space) for a in env.action_space})
+        self.visit_counts = defaultdict(int)
 
-
-def mc_control_es(
-        env: AbstractEnv,
-        gamma: float=1.0,
-        epsilon: float=0.1,
-        num_episodes: int=100_000,
-        Q: defaultdict=None,
-        policy: dict=None
-    ):
-    if Q is None:
-        Q = defaultdict(lambda: defaultdict(float))
-    if policy is None:
-        policy = {}
-    N = defaultdict(lambda: defaultdict(int))
-
-    for episode in range(num_episodes):
+    def generate_episode(self):
         episode = []
-        state = env.reset()
+        state = self.env.reset()
         done = False
 
         while not done:
-            if state not in policy:
-                actions = env.action_space
-                policy[state] = {a: 1 / len(actions) for a in actions}
-            actions = list(policy[state].keys())
-            probs = list(policy[state].values())
+            probs = list(self.policy[state].values())
+            actions = list(self.policy[state].keys())
             action = random.choices(actions, weights=probs)[0]
-
-            next_state, reward, done = env.step(action)
+            next_state, reward, done = self.env.step(action)
             episode.append((state, action, reward))
             state = next_state
 
-        G = 0.0
+        return episode
+
+    def update(self, episode):
+        G = 0
+        visited = set()
+
         for t in reversed(range(len(episode))):
-            state_t, action_t, reward_t1 = episode[t]
-            G = gamma * G + reward_t1
+            state, action, reward = episode[t]
+            G = self.gamma * G + reward
 
-            N[state_t][action_t] += 1
-            alpha = 1 / N[state_t][action_t]
-            Q[state_t][action_t] += alpha * (G - Q[state_t][action_t])
+            if (state, action) not in visited:
+                visited.add((state, action))
+                self.returns[(state, action)].append(G)
+                self.Q[state][action] = np.mean(self.returns[(state, action)])
+                self.visit_counts[state] += 1
 
-            update_policy(state_t, Q, policy, epsilon, env)
+                # Política greedy con ε-soft
+                best_action = max(self.Q[state], key=self.Q[state].get)
+                nA = len(self.env.action_space)
+                for a in self.env.action_space:
+                    if a == best_action:
+                        self.policy[state][a] = 1 - self.epsilon + self.epsilon / nA
+                    else:
+                        self.policy[state][a] = self.epsilon / nA
 
-    return Q, policy
+    def train(self, num_episodes):
+        for i in range(1, num_episodes + 1):
+            episode = self.generate_episode()
+            self.update(episode)
+            if i % 10000 == 0:
+                print(f"Entrenado en {i} episodios")
+
+    def get_policy(self):
+        return self.policy
+
+    def get_state_visits(self):
+        return self.visit_counts
+
+
+class MonteCarloControlEveryVisit:
+    def __init__(self, env: AbstractEnv, epsilon=0.1, gamma=1.0):
+        self.env = env
+        self.epsilon = epsilon
+        self.gamma = gamma
+        self.Q = defaultdict(lambda: {a: 0.0 for a in env.action_space})
+        self.N = defaultdict(lambda: {a: 0 for a in env.action_space})
+        self.policy = defaultdict(lambda: {a: 1.0 / len(env.action_space) for a in env.action_space})
+        self.visit_counts = defaultdict(int)
+
+    def generate_episode(self):
+        episode = []
+        state = self.env.reset()
+        done = False
+
+        while not done:
+            probs = list(self.policy[state].values())
+            actions = list(self.policy[state].keys())
+            action = random.choices(actions, weights=probs)[0]
+            next_state, reward, done = self.env.step(action)
+            episode.append((state, action, reward))
+            state = next_state
+
+        return episode
+
+    def update(self, episode):
+        G = 0
+
+        for t in reversed(range(len(episode))):
+            state, action, reward = episode[t]
+            G = self.gamma * G + reward
+
+            self.N[state][action] += 1
+            alpha = 1 / self.N[state][action]
+            self.Q[state][action] += alpha * (G - self.Q[state][action])
+            self.visit_counts[state] += 1
+
+            best_action = max(self.Q[state], key=self.Q[state].get)
+            nA = len(self.env.action_space)
+            for a in self.env.action_space:
+                if a == best_action:
+                    self.policy[state][a] = 1 - self.epsilon + self.epsilon / nA
+                else:
+                    self.policy[state][a] = self.epsilon / nA
+
+    def train(self, num_episodes):
+        for i in range(1, num_episodes + 1):
+            episode = self.generate_episode()
+            self.update(episode)
+            if i % 10000 == 0:
+                print(f"Entrenado en {i} episodios")
+
+    def get_policy(self):
+        return self.policy
+
+    def get_state_visits(self):
+        return self.visit_counts
