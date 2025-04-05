@@ -150,13 +150,12 @@ def run_experiment_cliff(agent_class, env_class, epsilon=0.1, gamma=1.0,
     return all_returns
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     returns_cliff = run_experiment_cliff(
         agent_class=MonteCarloControlEveryVisit,
         env_class=CliffEnv,
         epsilon=0.1,
         gamma=1.0,
-        num_runs=1
     )
 
     print("Retornos Cliff:", returns_cliff)

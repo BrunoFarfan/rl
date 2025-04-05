@@ -35,7 +35,7 @@ def plot_blackjack_visits(state_visits, title="Frecuencia de visitas (Blackjack)
     plt.show()
 
 
-def plot_cliff_visits(state_visits, width=6, height=4, title="Frecuencia de visitas (Cliff)"):
+def plot_cliff_visits(state_visits, width=6, height=4, title="Frecuencia de visitas (Cliff)", save=False):
     grid = np.zeros((height, width))
     for (r, c), count in state_visits.items():
         if 0 <= r < height and 0 <= c < width:
@@ -49,5 +49,8 @@ def plot_cliff_visits(state_visits, width=6, height=4, title="Frecuencia de visi
     plt.ylabel("Fila")
     plt.xticks(range(width))
     plt.yticks(range(height))
-    plt.savefig("cliff_state_visits.png")
+
+    if save:
+        plt.savefig("cliff_state_visits.png")
+
     plt.show()
