@@ -49,63 +49,9 @@ def play(problem):
     print(f"Total reward: {total_reward}")
 
 
-def play_gambler_problem(uniform: bool = False, greedy: bool = False):
-    for p in [0.25, 0.4, 0.55]:
-        problem = GamblerProblem(p)
-        gamma = 1.0
-
-        # politica uniforme
-        policy_uniform = {
-            s: uniform_policy(problem, s) for s in problem.states if not problem.is_terminal(s)
-        }
-        V_uniform, t = iterative_policy_evaluation(problem, gamma, policy_uniform)
-        if uniform:
-            initial_state = problem.get_initial_state()
-            print(
-                f"Gambler p: {p}, Uniform V(s0) = " +
-                f"{V_uniform[initial_state]:.3f}, Time = {t:.3f}s"
-            )
-        # politica greedy
-        policy_greedy = greedy_policy(problem, V_uniform, gamma)
-        V_greedy, t = iterative_policy_evaluation(problem, gamma, policy_greedy)
-        if greedy:
-            initial_state = problem.get_initial_state()
-            print(
-                f"Gambler p: {p}, Greedy V(s0) = " +
-                f"{V_greedy[problem.get_initial_state()]:.3f}, Time = {t:.3f}s"
-            )
-
-
-def play_grid_problem(uniform: bool = False, greedy: bool = False):
-    for size in range(3, 11):
-        problem = GridProblem(size)
-        gamma = 1.0
-
-        # politica uniforme
-        policy_uniform = {
-            s: uniform_policy(problem, s) for s in problem.states if not problem.is_terminal(s)
-        }
-        V_uniform, t = iterative_policy_evaluation(problem, gamma, policy_uniform)
-        if uniform:
-            initial_state = problem.get_initial_state()
-            print(
-                f"Grid size: {size}, Uniform V(s0) = " + 
-                f"{V_uniform[initial_state]:.3f}, Time = {t:.3f}s"
-            )
-
-        # politica greedy
-        policy_greedy = greedy_policy(problem, V_uniform, gamma)
-        V_greedy, t = iterative_policy_evaluation(problem, gamma, policy_greedy)
-        if greedy:
-            initial_state = problem.get_initial_state()
-            print(
-                f"Grid size: {size}, Greedy V(s0) = " +
-                f"{V_greedy[problem.get_initial_state()]:.3f}, Time = {t:.3f}s"
-            )
-
-
-
 def play_problem(problem_type: str, uniform: bool = False, greedy: bool = False):
+    assert uniform or greedy, "At least one of uniform or greedy must be True"
+
     if problem_type == 'gambler':
         gamma = 1.0
         param_list = [0.25, 0.4, 0.55]
@@ -136,8 +82,9 @@ def play_problem(problem_type: str, uniform: bool = False, greedy: bool = False)
         }
         V_uniform, t_uniform = iterative_policy_evaluation(problem, gamma, policy_uniform)
 
+        initial_state = problem.get_initial_state()
+
         if uniform:
-            initial_state = problem.get_initial_state()
             print(
                 f"{label}, Uniform V(s0) = "
                 f"{V_uniform[initial_state]:.3f}, Time = {t_uniform:.3f}s"
@@ -147,7 +94,6 @@ def play_problem(problem_type: str, uniform: bool = False, greedy: bool = False)
         V_greedy, t_greedy = iterative_policy_evaluation(problem, gamma, policy_greedy)
 
         if greedy:
-            initial_state = problem.get_initial_state()
             print(
                 f"{label}, Greedy V(s0) = "
                 f"{V_greedy[initial_state]:.3f}, Time = {t_greedy:.3f}s"
