@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import Any, Union
 
 State = Any
-Action = Union[str, int]
+Action = Union[str, tuple]
 Reward = Union[float, int]
 
 
