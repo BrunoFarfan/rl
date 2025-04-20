@@ -130,30 +130,4 @@ def run_cliff(num_episodes: int = 500, num_runs: int = 100, epsilon: float = 0.1
 
 
 if __name__ == "__main__":
-    env = CliffEnv()
-    # env = EscapeRoomEnv()
-    # play_simple_env(env)
-
-    # num_episodes = 500
-    # num_runs = 100
-
-    # results = {
-    #     "Q-Learning": np.zeros((num_runs, num_episodes)),
-    #     "SARSA": np.zeros((num_runs, num_episodes)),
-    #     "4-step SARSA": np.zeros((num_runs, num_episodes)),
-    # }
-
-    # for run in tqdm(range(num_runs), desc="Running experiments"):
-    #     results["Q-Learning"][run, :] = run_q_learning(env, num_episodes=num_episodes, epsilon=0.1, alpha=0.1, gamma=1.0)
-    #     results["SARSA"][run, :] = run_sarsa(env, num_episodes=num_episodes, epsilon=0.1, alpha=0.1, gamma=1.0)
-    #     results["4-step SARSA"][run, :] = run_n_step_sarsa(env, num_episodes=num_episodes, n=4, epsilon=0.1, alpha=0.1, gamma=1.0)
-
-    # plot_learning_curves(
-    #     results,
-    #     title="Comparación en CliffEnv",
-    #     ylabel="Retorno promedio",
-    #     y_min=-200,
-    #     y_max=0,
-    # )
-
     run_cliff(num_episodes=500, num_runs=100, epsilon=0.1, alpha=0.1, gamma=1.0)

@@ -54,5 +54,24 @@ class QLearning:
         td_error = td_target - self.q_table[state][action]
         self.q_table[state][action] += self.alpha * td_error
 
+    def multi_goal_update(self, state: State, action: Action, reward: Reward, next_state: State, next_action_space: list[Action], goals: list[State], done: bool):
+        position, goal = state
+        next_position, _ = next_state
+
+        for possible_goal in goals:
+            possible_state = (position, possible_goal)
+            next_possible_state = (next_position, possible_goal)
+
+            if possible_goal == goal:
+                td_target = reward
+                td_error = td_target - self.q_table[possible_state][action]
+                self.q_table[possible_state][action] += self.alpha * td_error
+
+            else:
+                max_q_next = max([self.q_table[next_possible_state][a] for a in next_action_space]) if not done else 0.0
+                td_target = self.gamma * max_q_next
+                td_error = td_target - self.q_table[possible_state][action]
+                self.q_table[possible_state][action] += self.alpha * td_error
+
     def get_q_table(self):
         return self.q_table
