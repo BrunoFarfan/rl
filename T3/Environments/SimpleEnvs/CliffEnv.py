@@ -24,9 +24,9 @@ class CliffEnv(GridEnv):
 
     def _get_location_letter(self, location):
         if location == self.__agents_location:
-            return "A"
+            return 'A'
         if location == self.__goal:
-            return "G"
+            return 'G'
         if location in self.__cliff:
-            return "C"
-        return " "
+            return 'C'
+        return ' '

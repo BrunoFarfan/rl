@@ -1,9 +1,7 @@
-
 class GridLocations:
-
     def __init__(self, grid_size: int):
         self.__grid_size = grid_size
-        self.__actions = ["down", "up", "left", "right"]
+        self.__actions = ['down', 'up', 'left', 'right']
         self.__location_ids = []
         self.__location_id_to_coordinates = []
         self.__coordinates_to_location_id = {}
@@ -37,13 +35,13 @@ class GridLocations:
 
     def get_next_location(self, current_location: int, action: str) -> int:
         coord_i, coord_j = self._get_coordinates(current_location)
-        if action == "left" and coord_j > 0:
+        if action == 'left' and coord_j > 0:
             coord_j -= 1
-        if action == "right" and coord_j < self.__grid_size - 1:
+        if action == 'right' and coord_j < self.__grid_size - 1:
             coord_j += 1
-        if action == "up" and coord_i > 0:
+        if action == 'up' and coord_i > 0:
             coord_i -= 1
-        if action == "down" and coord_i < self.__grid_size - 1:
+        if action == 'down' and coord_i < self.__grid_size - 1:
             coord_i += 1
         return self.get_location_id(coord_i, coord_j)
 

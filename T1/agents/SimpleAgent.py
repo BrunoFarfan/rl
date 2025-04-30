@@ -1,6 +1,8 @@
-from agents.BaseAgent import BaseAgent
-import numpy as np
 import random
+
+import numpy as np
+
+from agents.BaseAgent import BaseAgent
 
 
 class SimpleAgent(BaseAgent):
@@ -13,9 +15,8 @@ class SimpleAgent(BaseAgent):
     def get_action(self) -> int:
         if random.random() <= self.epsilon:
             return random.randrange(self.num_of_actions)
-        else:
-            return np.random.choice(np.flatnonzero(self.Q == self.Q.max()))
-        
+        return np.random.choice(np.flatnonzero(self.Q == self.Q.max()))
+
     def learn(self, action: int, reward: float) -> None:
         self.N[action] += 1
         self.Q[action] += (1 / self.N[action]) * (reward - self.Q[action])

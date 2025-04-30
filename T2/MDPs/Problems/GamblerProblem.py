@@ -2,7 +2,6 @@ from Problems.AbstractProblem import AbstractProblem
 
 
 class GamblerProblem(AbstractProblem):
-
     def __init__(self, prob_head: float = 0.4):
         self.__min_state = 0
         self.__max_state = 100

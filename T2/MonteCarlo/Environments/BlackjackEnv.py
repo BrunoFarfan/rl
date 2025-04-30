@@ -4,7 +4,6 @@ from Environments.AbstractEnv import AbstractEnv
 
 
 class BlackjackEnv(AbstractEnv):
-
     def __init__(self):
         self.__player = None
         self.__dealer = None
@@ -44,7 +43,7 @@ class BlackjackEnv(AbstractEnv):
         return player_points, player_has_usable_as, dealer_points
 
     def step(self, action):
-        assert action in self.action_space, f"Invalid action: {action}."
+        assert action in self.action_space, f'Invalid action: {action}.'
         if action == 'hit':
             self.__player.append(self.__draw_card())
             state = self.__get_state()
@@ -60,7 +59,9 @@ class BlackjackEnv(AbstractEnv):
     def __get_terminal_state(self):
         player_points = self.__count_points(self.__player)
         player_has_usable_as = self.__has_usable_as(self.__player)
-        dealer_points = self.__count_points(self.__dealer)  # terminal state includes the dealer's points
+        dealer_points = self.__count_points(
+            self.__dealer
+        )  # terminal state includes the dealer's points
         return player_points, player_has_usable_as, dealer_points
 
     def __get_reward_end_game(self) -> float:
@@ -72,16 +73,18 @@ class BlackjackEnv(AbstractEnv):
             return 1.0
         if players_points < dealers_points < 22:
             return -1.0
-        assert dealers_points > 21, f"If we get here, the dealer should have > 21 points. But he has {dealers_points}"
+        assert dealers_points > 21, (
+            f'If we get here, the dealer should have > 21 points. But he has {dealers_points}'
+        )
         return 1.0
 
     @property
     def action_space(self):
-        return ["hit", "stick"]
+        return ['hit', 'stick']
 
     def show(self):
-        print(f"Player: {self.__player} ({self.__count_points(self.__player)} points)")
+        print(f'Player: {self.__player} ({self.__count_points(self.__player)} points)')
         if self.__done:
-            print(f"Dealer: {self.__dealer} ({self.__count_points(self.__dealer)} points)")
+            print(f'Dealer: {self.__dealer} ({self.__count_points(self.__dealer)} points)')
         else:
-            print(f"Dealer: {self.__dealer[0]}")
+            print(f'Dealer: {self.__dealer[0]}')

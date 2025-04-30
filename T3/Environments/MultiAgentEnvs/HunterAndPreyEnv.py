@@ -1,9 +1,8 @@
-from Environments.MultiAgentEnvs.AbstractMultiAgentEnv import AbstractMultiAgentEnv
 from Environments.GridEnv import GridEnv
+from Environments.MultiAgentEnvs.AbstractMultiAgentEnv import AbstractMultiAgentEnv
 
 
 class HunterAndPreyEnv(GridEnv, AbstractMultiAgentEnv):
-
     def __init__(self):
         super().__init__(height=7, width=7)
         vertical_walls = [(i, j) for i in range(self._height) if i != 3 for j in [0, 6]]
@@ -16,10 +15,12 @@ class HunterAndPreyEnv(GridEnv, AbstractMultiAgentEnv):
 
     @property
     def action_space(self):
-        return [(a1, a2, a3)
-                for a1 in self.__single_agent_actions
-                for a2 in self.__single_agent_actions
-                for a3 in self.__single_agent_actions]
+        return [
+            (a1, a2, a3)
+            for a1 in self.__single_agent_actions
+            for a2 in self.__single_agent_actions
+            for a3 in self.__single_agent_actions
+        ]
 
     @property
     def single_agent_action_space(self):
@@ -33,7 +34,9 @@ class HunterAndPreyEnv(GridEnv, AbstractMultiAgentEnv):
         walls = list(self.__walls)
         self.__hunter1 = self._sample_valid_location(invalid_locations=walls)
         self.__hunter2 = self._sample_valid_location(invalid_locations=[self.__hunter1] + walls)
-        self.__prey = self._sample_valid_location(invalid_locations=[self.__hunter1, self.__hunter2] + walls)
+        self.__prey = self._sample_valid_location(
+            invalid_locations=[self.__hunter1, self.__hunter2] + walls
+        )
         return self.__get_state()
 
     def __get_state(self):
@@ -53,17 +56,20 @@ class HunterAndPreyEnv(GridEnv, AbstractMultiAgentEnv):
         if action == 'None':
             return current_location
         new_location = self._get_new_location(current_location, action)
-        if new_location in self.__walls or new_location in [self.__hunter1, self.__hunter2]:
+        if new_location in self.__walls or new_location in [
+            self.__hunter1,
+            self.__hunter2,
+        ]:
             return current_location
         return new_location
 
     def _get_location_letter(self, location):
         if location == self.__hunter1:
-            return "A"
+            return 'A'
         if location == self.__hunter2:
-            return "B"
+            return 'B'
         if location == self.__prey:
-            return "o"
+            return 'o'
         if location in self.__walls:
-            return "X"
-        return " "
+            return 'X'
+        return ' '

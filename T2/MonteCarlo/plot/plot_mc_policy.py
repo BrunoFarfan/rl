@@ -3,7 +3,7 @@ import numpy as np
 
 
 def plot_blackjack_policy(policy, title='Política aprendida (stick/hit)', save=False):
-    usable = np.zeros((10, 10)) # filas: player 12-21, columnas: dealer 1-10
+    usable = np.zeros((10, 10))  # filas: player 12-21, columnas: dealer 1-10
     no_usable = np.zeros((10, 10))
 
     for player in range(12, 22):
@@ -22,29 +22,24 @@ def plot_blackjack_policy(policy, title='Política aprendida (stick/hit)', save=
                     no_usable[row, col] = val
 
     fig, axs = plt.subplots(1, 2, figsize=(14, 5))
-    for ax, mat, label in zip(axs, [no_usable, usable], ["Sin As usable", "Con As usable"]):
+    for ax, mat, label in zip(axs, [no_usable, usable], ['Sin As usable', 'Con As usable']):
         im = ax.imshow(mat, cmap='Greys', origin='lower', vmin=0, vmax=1)
         ax.set_xticks(range(10))
         ax.set_xticklabels(range(1, 11))
         ax.set_yticks(range(10))
         ax.set_yticklabels(range(12, 22))
-        ax.set_xlabel("Carta visible del dealer")
-        ax.set_ylabel("Puntaje del jugador")
+        ax.set_xlabel('Carta visible del dealer')
+        ax.set_ylabel('Puntaje del jugador')
         ax.set_title(label)
     fig.suptitle(title)
     plt.tight_layout()
     if save:
-        plt.savefig("blackjack_policy_greedy.png")
+        plt.savefig('blackjack_policy_greedy.png')
     plt.show()
 
 
 def plot_cliff_policy(policy, width, height=4):
-    arrow = {
-        (1, 0): '↑',
-        (-1, 0): '↓',
-        (0, 1): '→',
-        (0, -1): '←'
-    }
+    arrow = {(1, 0): '↑', (-1, 0): '↓', (0, 1): '→', (0, -1): '←'}
 
     grid = np.full((height, width), ' ')
     for r in range(height):
@@ -61,6 +56,6 @@ def plot_cliff_policy(policy, width, height=4):
     for c in range(1, width - 1):
         grid[0, c] = 'X'
 
-    print("\nPolítica aprendida (Cliff):\n")
+    print('\nPolítica aprendida (Cliff):\n')
     for row in reversed(grid):
         print(' '.join(row))

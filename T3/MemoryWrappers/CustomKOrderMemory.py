@@ -1,9 +1,9 @@
-from Environments.AbstractEnv import AbstractEnv
 from collections import deque
+
+from Environments.AbstractEnv import AbstractEnv
 
 
 class CustomKOrderMemory(AbstractEnv):
-
     def __init__(self, env, memory_size):
         self.__env = env
         self.__memory_size = memory_size
@@ -12,21 +12,17 @@ class CustomKOrderMemory(AbstractEnv):
 
     @property
     def action_space(self):
-        return [
-            (env_a, mem_a)
-            for env_a in self.__env.action_space
-            for mem_a in ('save', 'ignore')
-        ]
-    
+        return [(env_a, mem_a) for env_a in self.__env.action_space for mem_a in ('save', 'ignore')]
+
     def reset(self):
         self.__env_state = self.__env.reset()
         self.__buffer.clear()
 
         return self.__get_state()
-    
+
     def __get_state(self):
         return self.__env_state, tuple(self.__buffer)
-    
+
     def step(self, action):
         env_action, mem_action = action
 
@@ -40,4 +36,4 @@ class CustomKOrderMemory(AbstractEnv):
 
     def show(self):
         self.__env.show()
-        print(f"Buffer: {self.__buffer}")
+        print(f'Buffer: {self.__buffer}')

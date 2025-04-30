@@ -5,14 +5,13 @@ from Environments.AbstractEnv import AbstractEnv
 
 
 class GridEnv(AbstractEnv):
-
     def __init__(self, height, width):
         self._height = height
         self._width = width
 
     @property
     def action_space(self):
-        return ["down", "up", "right", "left"]
+        return ['down', 'up', 'right', 'left']
 
     @abstractmethod
     def reset(self):
@@ -40,13 +39,13 @@ class GridEnv(AbstractEnv):
     @staticmethod
     def __get_new_raw_location(current_location, action):
         row, col = current_location
-        if action == "down":
+        if action == 'down':
             row += 1
-        if action == "up":
+        if action == 'up':
             row -= 1
-        if action == "right":
+        if action == 'right':
             col += 1
-        if action == "left":
+        if action == 'left':
             col -= 1
         return row, col
 
@@ -61,14 +60,14 @@ class GridEnv(AbstractEnv):
 
     def show(self):
         print()
-        print("X" * (self._width + 2))
+        print('X' * (self._width + 2))
         for i in range(self._height):
-            print("X", end="")
+            print('X', end='')
             for j in range(self._width):
                 location = (i, j)
-                print(self._get_location_letter(location), end="")
-            print("X")
-        print("X" * (self._width + 2))
+                print(self._get_location_letter(location), end='')
+            print('X')
+        print('X' * (self._width + 2))
 
     @abstractmethod
     def _get_location_letter(self, location):

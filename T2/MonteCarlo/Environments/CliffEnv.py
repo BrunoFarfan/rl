@@ -3,7 +3,6 @@ from Environments.CliffVisualizer import CliffVisualizer
 
 
 class CliffEnv(AbstractEnv):
-
     def __init__(self, width: int = 6):
         self.__height = 4
         self.__width = width

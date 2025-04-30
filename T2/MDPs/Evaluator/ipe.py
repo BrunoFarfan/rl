@@ -1,13 +1,11 @@
 import time
+
 from Problems.AbstractProblem import AbstractProblem
 
 
 def iterative_policy_evaluation(
-        problem: AbstractProblem,
-        gamma: float,
-        policy: dict=None,
-        theta: float=1e-10
-    ):
+    problem: AbstractProblem, gamma: float, policy: dict = None, theta: float = 1e-10
+):
     V = {s: 0.0 for s in problem.states}
 
     start_time = time.time()

@@ -3,7 +3,6 @@ from Environments.MultiAgentEnvs.HunterEnv import HunterEnv
 
 
 class CentralizedHunterEnv(AbstractMultiAgentEnv):
-
     def __init__(self):
         self.env = HunterEnv()
 
@@ -24,7 +23,9 @@ class CentralizedHunterEnv(AbstractMultiAgentEnv):
 
     def step(self, action):
         state, reward, done = self.env.step(action)
-        reward = reward[0]  # In this setting, the rewards are identical, so we only consider one of them
+        reward = reward[
+            0
+        ]  # In this setting, the rewards are identical, so we only consider one of them
         return state, reward, done
 
     def show(self):

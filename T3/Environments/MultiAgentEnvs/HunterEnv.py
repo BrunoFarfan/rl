@@ -5,7 +5,6 @@ from Environments.MultiAgentEnvs.HunterAndPreyEnv import HunterAndPreyEnv
 
 
 class HunterEnv(AbstractMultiAgentEnv):
-
     def __init__(self):
         self.env = HunterAndPreyEnv()
         self.__state = None
@@ -13,7 +12,9 @@ class HunterEnv(AbstractMultiAgentEnv):
 
     @property
     def action_space(self):
-        return [(a1, a2) for a1 in self.__single_agent_actions for a2 in self.__single_agent_actions]
+        return [
+            (a1, a2) for a1 in self.__single_agent_actions for a2 in self.__single_agent_actions
+        ]
 
     @property
     def num_of_agents(self):

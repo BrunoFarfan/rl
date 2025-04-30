@@ -2,7 +2,6 @@ from Environments.AbstractEnv import AbstractEnv
 
 
 class BinaryMemory(AbstractEnv):
-
     def __init__(self, env, num_of_bits):
         self.__env = env
         self.__num_of_bits = num_of_bits
@@ -13,7 +12,11 @@ class BinaryMemory(AbstractEnv):
     def action_space(self):
         env_actions = self.__env.action_space
         memory_actions = list(range(2**self.__num_of_bits))
-        return [(env_action, memory_action) for env_action in env_actions for memory_action in memory_actions]
+        return [
+            (env_action, memory_action)
+            for env_action in env_actions
+            for memory_action in memory_actions
+        ]
 
     def reset(self):
         self.__env_state = self.__env.reset()
@@ -31,4 +34,4 @@ class BinaryMemory(AbstractEnv):
 
     def show(self):
         self.__env.show()
-        print(f"Memory: {self.__memory_state}")
+        print(f'Memory: {self.__memory_state}')

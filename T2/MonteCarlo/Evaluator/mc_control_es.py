@@ -1,5 +1,6 @@
 import random
 from collections import defaultdict
+
 import numpy as np
 from Environments.AbstractEnv import AbstractEnv
 
@@ -11,7 +12,9 @@ class MonteCarloControl:
         self.gamma = gamma
         self.Q = defaultdict(lambda: {a: 0.0 for a in env.action_space})
         self.returns = defaultdict(list)
-        self.policy = defaultdict(lambda: {a: 1.0 / len(env.action_space) for a in env.action_space})
+        self.policy = defaultdict(
+            lambda: {a: 1.0 / len(env.action_space) for a in env.action_space}
+        )
         self.visit_counts = defaultdict(int)
 
     def generate_episode(self):
@@ -57,7 +60,7 @@ class MonteCarloControl:
             episode = self.generate_episode()
             self.update(episode)
             if i % 10000 == 0:
-                print(f"Entrenado en {i} episodios")
+                print(f'Entrenado en {i} episodios')
 
     def get_policy(self):
         return self.policy
@@ -73,7 +76,9 @@ class MonteCarloControlEveryVisit:
         self.gamma = gamma
         self.Q = defaultdict(lambda: {a: 0.0 for a in env.action_space})
         self.N = defaultdict(lambda: {a: 0 for a in env.action_space})
-        self.policy = defaultdict(lambda: {a: 1.0 / len(env.action_space) for a in env.action_space})
+        self.policy = defaultdict(
+            lambda: {a: 1.0 / len(env.action_space) for a in env.action_space}
+        )
         self.visit_counts = defaultdict(int)
 
     def generate_episode(self):
@@ -116,7 +121,7 @@ class MonteCarloControlEveryVisit:
             episode = self.generate_episode()
             self.update(episode)
             if i % 10000 == 0:
-                print(f"Entrenado en {i} episodios")
+                print(f'Entrenado en {i} episodios')
 
     def get_policy(self):
         return self.policy

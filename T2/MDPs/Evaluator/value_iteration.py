@@ -1,5 +1,6 @@
 import time
 
+
 def value_iteration(problem, gamma, theta=1e-10):
     V = {s: 0.0 for s in problem.states}
     policy = {}

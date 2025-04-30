@@ -1,11 +1,10 @@
-from Environments.MultiGoalEnvs.RoomEnv import RoomEnv
-from Agents.QLearning import QLearning
-from Agents.Sarsa import Sarsa, NStepSarsa
-from MainSimpleEnvs import play_simple_env
 import numpy as np
-from tqdm import tqdm
+from Agents.QLearning import QLearning
+from Agents.Sarsa import NStepSarsa, Sarsa
+from Environments.MultiGoalEnvs.RoomEnv import RoomEnv
+from MainSimpleEnvs import play_simple_env
 from Plotting.Plotter import plot_learning_curves
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from tqdm import tqdm
 
 
 def play_room_env():
@@ -52,7 +51,9 @@ def run_multi_goal_q_learning(env: RoomEnv, num_episodes=1000, alpha=0.1, gamma=
         while not done:
             action = agent.get_action(state, action_space)
             next_state, reward, done = env.step(action)
-            agent.multi_goal_update(state, action, reward, next_state, action_space, env.goals, done)
+            agent.multi_goal_update(
+                state, action, reward, next_state, action_space, env.goals, done
+            )
             state = next_state
             episode_length += 1
 
@@ -134,7 +135,13 @@ def run_n_step_sarsa(env: RoomEnv, n=8, num_episodes=1000, alpha=0.1, gamma=0.99
     return np.array(episode_lengths)
 
 
-def run_room(num_episodes: int = 500, num_runs: int = 100, epsilon: float = 0.1, alpha: float = 0.1, gamma: float = 0.99):
+def run_room(
+    num_episodes: int = 500,
+    num_runs: int = 100,
+    epsilon: float = 0.1,
+    alpha: float = 0.1,
+    gamma: float = 0.99,
+):
     env = RoomEnv()
     reults = {
         'Q-Learning': np.zeros((num_runs, num_episodes)),
@@ -146,10 +153,21 @@ def run_room(num_episodes: int = 500, num_runs: int = 100, epsilon: float = 0.1,
 
     for run in tqdm(range(num_runs), desc='Running experiments'):
         reults['Q-Learning'][run, :] = run_q_learning(env, num_episodes, alpha, gamma, epsilon)
-        reults['multi-goal Q-Learning'][run, :] = run_multi_goal_q_learning(env, num_episodes, alpha, gamma, epsilon)
+        reults['multi-goal Q-Learning'][run, :] = run_multi_goal_q_learning(
+            env, num_episodes, alpha, gamma, epsilon
+        )
         reults['SARSA'][run, :] = run_sarsa(env, num_episodes, alpha, gamma, epsilon)
-        reults['multi-goal SARSA'][run, :] = run_multi_goal_sarsa(env, num_episodes, alpha, gamma, epsilon)
-        reults['8-step SARSA'][run, :] = run_n_step_sarsa(env, n=8, num_episodes=num_episodes, alpha=alpha, gamma=gamma, epsilon=epsilon)
+        reults['multi-goal SARSA'][run, :] = run_multi_goal_sarsa(
+            env, num_episodes, alpha, gamma, epsilon
+        )
+        reults['8-step SARSA'][run, :] = run_n_step_sarsa(
+            env,
+            n=8,
+            num_episodes=num_episodes,
+            alpha=alpha,
+            gamma=gamma,
+            epsilon=epsilon,
+        )
 
     return reults
 

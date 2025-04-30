@@ -17,7 +17,7 @@ def greedy_policy(problem: AbstractProblem, V: dict, gamma: float) -> dict:
                 best_actions = [a]
             elif q == best_value:
                 best_actions.append(a)
-        
+
         best_action = best_actions[0]
         policy[s] = {best_action: 1.0}
     return policy

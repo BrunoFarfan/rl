@@ -4,9 +4,7 @@ from agents.BaseAgent import BaseAgent
 
 
 class RandomAgent(BaseAgent):
-    """
-    This agent doesn't learn. It simply returns a random action.
-    """
+    """This agent doesn't learn. It simply returns a random action."""
 
     def __init__(self, num_of_actions: int):
         self.num_of_actions = num_of_actions

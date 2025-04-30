@@ -2,9 +2,8 @@ import numpy as np
 
 
 class BanditEnv:
-
     def __init__(self, seed: int, mean: float = 0.0, num_of_arms: int = 10):
-        assert num_of_arms > 0, "num_of_arms must be greater than 0"
+        assert num_of_arms > 0, 'num_of_arms must be greater than 0'
         self.__num_of_arms = num_of_arms
         rng = np.random.RandomState(seed)
         self.__means = rng.normal(loc=mean, scale=1.0, size=self.__num_of_arms)

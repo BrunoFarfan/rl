@@ -4,7 +4,6 @@ from Environments.AbstractEnv import AbstractEnv
 
 
 class KOrderMemory(AbstractEnv):
-
     def __init__(self, env, memory_size):
         self.__env = env
         self.__memory_size = memory_size
@@ -27,4 +26,4 @@ class KOrderMemory(AbstractEnv):
 
     def show(self):
         self.__env.show()
-        print(f"Memory: {self.__memory}")
+        print(f'Memory: {self.__memory}')

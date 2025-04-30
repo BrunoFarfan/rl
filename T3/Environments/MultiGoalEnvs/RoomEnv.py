@@ -4,12 +4,15 @@ from Environments.GridEnv import GridEnv
 
 
 class RoomEnv(GridEnv):
-
     def __init__(self):
         super().__init__(height=11, width=17)
         self.__start = (2, 0)
         vertical_walls = [(i, j) for i in range(self._height) for j in [5, 10]]
-        horizontal_walls = [(5, j) for j in range(5)] + [(6, j) for j in range(6, 10)] + [(5, j) for j in range(11, 17)]
+        horizontal_walls = (
+            [(5, j) for j in range(5)]
+            + [(6, j) for j in range(6, 10)]
+            + [(5, j) for j in range(11, 17)]
+        )
         doors = [(1, 5), (9, 5), (3, 10), (8, 10), (5, 2), (6, 8), (5, 14)]
         self.__walls = set(vertical_walls + horizontal_walls)
         for door in doors:
@@ -24,7 +27,9 @@ class RoomEnv(GridEnv):
         return self.__goals
 
     def reset(self):
-        self.__agents_location = self._sample_valid_location(invalid_locations=self.__nonempty_locations)
+        self.__agents_location = self._sample_valid_location(
+            invalid_locations=self.__nonempty_locations
+        )
         self.__current_goal = random.choice(self.__goals)
         return self.__get_state()
 
@@ -41,9 +46,9 @@ class RoomEnv(GridEnv):
 
     def _get_location_letter(self, location):
         if location == self.__agents_location:
-            return "A"
+            return 'A'
         if location == self.__current_goal:
-            return "G"
+            return 'G'
         if location in self.__walls:
-            return "X"
-        return " "
+            return 'X'
+        return ' '

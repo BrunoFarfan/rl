@@ -2,7 +2,6 @@ from Environments.GridEnv import GridEnv
 
 
 class InvisibleDoorEnv(GridEnv):
-
     def __init__(self):
         super().__init__(height=4, width=5)
         self.__start = (self._height - 1, 0)
@@ -30,18 +29,24 @@ class InvisibleDoorEnv(GridEnv):
             self.__is_door_open = not self.__is_door_open
         done = self.__agents_location == self.__goal
         reward = 1.0 if done else 0.0
-        return self.__agents_location, reward, done or (self.__current_time >= self.__time_limit)
+        return (
+            self.__agents_location,
+            reward,
+            done or (self.__current_time >= self.__time_limit),
+        )
 
     def __is_next_location_valid(self, next_location):
-        return next_location not in self.__walls and (self.__is_door_open or next_location != self.__invisible_door)
+        return next_location not in self.__walls and (
+            self.__is_door_open or next_location != self.__invisible_door
+        )
 
     def _get_location_letter(self, location):
         if location == self.__agents_location:
-            return "A"
+            return 'A'
         if location == self.__goal:
-            return "G"
+            return 'G'
         if location == self.__button:
-            return "B"
+            return 'B'
         if location in self.__walls:
-            return "X"
-        return " "
+            return 'X'
+        return ' '

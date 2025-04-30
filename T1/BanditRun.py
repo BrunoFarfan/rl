@@ -8,8 +8,8 @@ class BanditRun:
         self.__best_action_history.append(int(is_best_action))
 
     def get_average_statistics(self, statistic: str, step: int) -> float:
-        assert statistic in ["reward", "best_action"], "statistic must be 'reward' or 'best_action'"
-        if statistic == "reward":
+        assert statistic in ['reward', 'best_action'], "statistic must be 'reward' or 'best_action'"
+        if statistic == 'reward':
             return self.__reward_history[step]
         return self.__best_action_history[step]
 

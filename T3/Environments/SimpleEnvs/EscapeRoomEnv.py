@@ -2,7 +2,6 @@ from Environments.GridEnv import GridEnv
 
 
 class EscapeRoomEnv(GridEnv):
-
     def __init__(self):
         super().__init__(height=10, width=25)
         self.__key = (0, 0)
@@ -28,11 +27,11 @@ class EscapeRoomEnv(GridEnv):
 
     def _get_location_letter(self, location):
         if location == self.__agents_location:
-            return "A"
+            return 'A'
         if location == self.__key and not self.__has_key:
-            return "K"
+            return 'K'
         if location == self.__door:
-            return "D"
+            return 'D'
         if location in self.__nails:
-            return "N"
-        return " "
+            return 'N'
+        return ' '

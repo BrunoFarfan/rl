@@ -3,7 +3,6 @@ from Problems.GridLocations import GridLocations
 
 
 class CookieProblem(AbstractProblem):
-
     def __init__(self, grid_size: int = 3):
         self.__grid_size = grid_size
         self.__grid_locations = GridLocations(grid_size)
@@ -30,10 +29,8 @@ class CookieProblem(AbstractProblem):
         return False
 
     def get_transitions(
-            self,
-            state: tuple[int, int],
-            action: str
-        ) -> list[tuple[float, tuple[int, int], float]]:
+        self, state: tuple[int, int], action: str
+    ) -> list[tuple[float, tuple[int, int], float]]:
         agent_location, cookie_location = state
         agent_next_location = self.__grid_locations.get_next_location(agent_location, action)
         if agent_next_location != cookie_location:
@@ -41,9 +38,8 @@ class CookieProblem(AbstractProblem):
         return self._get_outcomes_when_agent_reaches_the_cookie(agent_next_location)
 
     def _get_outcomes_when_agent_reaches_the_cookie(
-            self,
-            agent_location: int
-        ) -> list[tuple[float, tuple[int, int], float]]:
+        self, agent_location: int
+    ) -> list[tuple[float, tuple[int, int], float]]:
         locations = self.__grid_locations.get_all_locations()
         prob = 1.0 / (len(locations) - 1)
         reward = 1.0
@@ -56,16 +52,16 @@ class CookieProblem(AbstractProblem):
     def show(self, state):
         agent_location, cookie_location = state
         location_id = 0
-        print("X"*(self.__grid_size + 2))
+        print('X' * (self.__grid_size + 2))
         for i in range(self.__grid_size):
-            print("X", end="")
+            print('X', end='')
             for j in range(self.__grid_size):
                 if location_id == agent_location:
-                    print("A", end="")
+                    print('A', end='')
                 elif location_id == cookie_location:
-                    print("C", end="")
+                    print('C', end='')
                 else:
-                    print(" ", end="")
+                    print(' ', end='')
                 location_id += 1
-            print("X")
-        print("X"*(self.__grid_size + 2))
+            print('X')
+        print('X' * (self.__grid_size + 2))
