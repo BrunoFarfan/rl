@@ -245,7 +245,7 @@ def run_escape_room(
 
     results = {}
 
-    for run in tqdm(range(num_runs), desc=f'Running experiments'):
+    for run in tqdm(range(num_runs), desc='Running experiments'):
         for planning_steps in planning_steps_array:
             temp_results = run_dyna(
                 env,

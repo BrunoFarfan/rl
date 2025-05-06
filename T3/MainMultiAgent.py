@@ -124,7 +124,7 @@ def run_decentralized_cooperative_q_learning(
     return results
 
 
-def run_decentralized_competitve_q_learning(
+def run_decentralized_competitive_q_learning(
     env_class=HunterAndPreyEnv,
     num_runs: int = 30,
     num_episodes: int = 50_000,
@@ -201,7 +201,7 @@ def run_decentralized_competitve_q_learning(
 if __name__ == '__main__':
     results_centralized = run_centralized_q_learning()
     results_cooperative = run_decentralized_cooperative_q_learning()
-    results_competitive = run_decentralized_competitve_q_learning()
+    results_competitive = run_decentralized_competitive_q_learning()
 
     results = {
         'Centralized Q-Learning': results_centralized['Q-Learning'],
