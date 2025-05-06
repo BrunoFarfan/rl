@@ -16,3 +16,9 @@ Para reproducir los resultados de la pregunta e) se debe ejecutar el código de 
 
 ### Pregunta f)
 
+Para reproducir los resultados de la pregunta f) se debe ejecutar el código de `MainMultiAgent.py`.
+
+### Pregunta g)
+
+Para reproducir los resultados de la pregunta g) se debe ejecutar el código de `MainPartiallyObservable.py`.
+Dependiendo de qué variante de memoria se quiera usar, se debe descomentar la línea de `results_xx` correspondiente y su respectivo `plot` en el `if __name__ == "__main__"`.
