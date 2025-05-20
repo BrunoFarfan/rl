@@ -1,0 +1,102 @@
+from pathlib import Path
+
+import gymnasium as gym
+from stable_baselines3 import DQN
+from stable_baselines3.common.monitor import Monitor
+from tqdm import tqdm
+
+
+def main(n_runs: int = 30, n_timesteps: int = 300_000):
+    Path('T4/data/dqn/').mkdir(parents=True, exist_ok=True)
+
+    for run in tqdm(range(n_runs), desc='DQN runs'):
+        env = gym.make('MountainCar-v0')
+        env = Monitor(env, f'T4/data/dqn/dqn_results_{run + 1}')
+
+        model = DQN(
+            'MlpPolicy',
+            env,
+            learning_rate=0.004,
+            buffer_size=10000,
+            learning_starts=1000,
+            batch_size=128,
+            gamma=0.98,
+            exploration_fraction=0.2,
+            exploration_final_eps=0.07,
+            train_freq=16,
+            gradient_steps=8,
+            target_update_interval=600,
+            policy_kwargs=dict(net_arch=[256, 256]),
+            verbose=1,
+        )
+
+        model.learn(total_timesteps=n_timesteps, log_interval=10)
+
+        env.close()
+
+
+def hyperparameter_search():
+    import itertools
+
+    import numpy as np
+
+    # Define hyperparameter grid
+    learning_rates = [1e-4, 5e-4, 1e-3]
+    buffer_sizes = [10000, 50000]
+    batch_sizes = [32, 64]
+    gammas = [0.99, 1.0]
+    exploration_fractions = [0.05, 0.1]
+    exploration_final_epsilons = [0.01, 0.05]
+
+    param_grid = list(
+        itertools.product(
+            learning_rates,
+            buffer_sizes,
+            batch_sizes,
+            gammas,
+            exploration_fractions,
+            exploration_final_epsilons,
+        )
+    )
+
+    best_score = float('inf')
+    best_params = None
+
+    for params in tqdm(param_grid, desc='Hyperparameter search'):
+        lr, buf, batch, gamma, expl_frac, expl_final = params
+        env = gym.make('MountainCar-v0')
+        env = Monitor(env, None)  # No file output for speed
+        model = DQN(
+            'MlpPolicy',
+            env,
+            learning_rate=lr,
+            buffer_size=buf,
+            batch_size=batch,
+            gamma=gamma,
+            exploration_fraction=expl_frac,
+            exploration_final_eps=expl_final,
+            verbose=0,
+        )
+        # Short run for speed
+        model.learn(total_timesteps=10_000, log_interval=10)
+        # Evaluate
+        episode_lengths = env.get_episode_lengths()
+        print(np.mean(episode_lengths[-5:]))
+        avg_length = np.mean(episode_lengths[-5:]) if episode_lengths else float('inf')
+        if avg_length < best_score:
+            best_score = avg_length
+            best_params = params
+        env.close()
+
+    print('Best hyperparameters:')
+    print(
+        f'learning_rate={best_params[0]}, buffer_size={best_params[1]}, batch_size={best_params[2]}, '
+    )
+    print(
+        f'gamma={best_params[3]}, exploration_fraction={best_params[4]}, exploration_final_eps={best_params[5]}'
+    )
+    print(f'Average episode length (last 5): {best_score}')
+
+
+if __name__ == '__main__':
+    main()
