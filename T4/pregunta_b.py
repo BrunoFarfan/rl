@@ -1,6 +1,8 @@
 from pathlib import Path
 
 import gymnasium as gym
+from plotting.csv_reader import load_lengths_from_csv_dir
+from plotting.plotter import plot_learning_curves
 from stable_baselines3 import DQN
 from stable_baselines3.common.monitor import Monitor
 from tqdm import tqdm
@@ -33,6 +35,9 @@ def main(n_runs: int = 30, n_timesteps: int = 300_000):
         model.learn(total_timesteps=n_timesteps, log_interval=10)
 
         env.close()
+
+    # Save the model
+    model.save('T4/data/dqn/dqn_model')
 
 
 def hyperparameter_search():
@@ -90,13 +95,25 @@ def hyperparameter_search():
 
     print('Best hyperparameters:')
     print(
-        f'learning_rate={best_params[0]}, buffer_size={best_params[1]}, batch_size={best_params[2]}, '
-    )
-    print(
-        f'gamma={best_params[3]}, exploration_fraction={best_params[4]}, exploration_final_eps={best_params[5]}'
+        f'learning_rate={best_params[0]}, buffer_size={best_params[1]}, '
+        f'batch_size={best_params[2]}, gamma={best_params[3]}, '
+        f'exploration_fraction={best_params[4]}, '
+        f'exploration_final_eps={best_params[5]}'
     )
     print(f'Average episode length (last 5): {best_score}')
 
 
+def plot_results():
+    lengths = load_lengths_from_csv_dir('T4/data/dqn/')
+    plot_learning_curves(
+        results={
+            'DQN': lengths,
+        },
+        title='DQN en MountainCar-v0',
+        xlabel='Episodio',
+        ylabel='Largo promedio de episodio',
+    )
+
+
 if __name__ == '__main__':
-    main()
+    plot_results()
