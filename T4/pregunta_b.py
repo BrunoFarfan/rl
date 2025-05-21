@@ -115,5 +115,19 @@ def plot_results():
     )
 
 
+def show_agent(agent_path: str, n_steps: int = 1000):
+    model = DQN.load(agent_path)
+    env = gym.make('MountainCar-v0', render_mode='human')
+    observation, info = env.reset()
+    for _ in range(n_steps):
+        action, _states = model.predict(observation)
+        action = int(action)  # Ensure action is an integer
+        observation, reward, terminated, truncated, info = env.step(action)
+
+        if terminated or truncated:
+            observation, info = env.reset()
+    env.close()
+
+
 if __name__ == '__main__':
-    plot_results()
+    show_agent('T4/data/dqn/dqn_model')

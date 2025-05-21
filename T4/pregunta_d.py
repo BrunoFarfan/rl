@@ -54,5 +54,17 @@ def plot_results(column_length: int = 1500):
     )
 
 
+def show_agent(agent_path: str, n_steps: int = 1000):
+    model = DDPG.load(agent_path)
+    env = gym.make('MountainCarContinuous-v0', render_mode='human')
+    observation, info = env.reset()
+    for _ in range(n_steps):
+        action, _states = model.predict(observation)
+        observation, reward, terminated, truncated, info = env.step(action)
+        if terminated or truncated:
+            observation, info = env.reset()
+    env.close()
+
+
 if __name__ == '__main__':
-    plot_results(column_length=1000)
+    show_agent('T4/data/ddpg/ddpg_model')
