@@ -12,6 +12,7 @@ def plot_learning_curves(
     figsize=(16, 9),
     legend_loc='upper left',
     save_path: str = None,
+    vertical_line_x: float = None,
 ):
     """Plot learning curves for multiple algorithms.
 
@@ -26,6 +27,7 @@ def plot_learning_curves(
         y_max (float, optional): Maximum value for the Y-axis.
         figsize (tuple, optional): Size of the figure.
         legend_loc (str, optional): Location of the legend.
+        vertical_line_x (float, optional): X position for a vertical dashed red line.
 
     """
     plt.figure(figsize=figsize)
@@ -46,6 +48,9 @@ def plot_learning_curves(
         plt.ylim(bottom=y_min)
     if y_max is not None:
         plt.ylim(top=y_max)
+
+    if vertical_line_x is not None:
+        plt.axvline(x=vertical_line_x, color='red', linestyle='--', alpha=0.7)
 
     plt.grid(True)
     plt.tight_layout()

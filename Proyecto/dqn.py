@@ -3,17 +3,22 @@ from pathlib import Path
 import gymnasium as gym
 from plotting.csv_reader import load_lengths_from_csv_dir
 from plotting.plotter import plot_learning_curves
+from reward_wrapper import TraumaWrapper
 from stable_baselines3 import DQN
 from stable_baselines3.common.monitor import Monitor
 from tqdm import tqdm
 
+SAVE_DIR = 'data/test_dqn_normal'
 
-def main(n_runs: int = 30, n_timesteps: int = 600_000):
-    Path('Proyecto/data/dqn/').mkdir(parents=True, exist_ok=True)
+
+def main(n_runs: int = 15, n_timesteps: int = 300_000, trauma_step: int | None = None):
+    (Path('Proyecto') / SAVE_DIR).mkdir(parents=True, exist_ok=True)
 
     for run in tqdm(range(n_runs), desc='DQN runs'):
         env = gym.make('MountainCar-v0')
-        env = Monitor(env, f'Proyecto/data/dqn/dqn_results_{run + 1}')
+        if trauma_step is not None:
+            env = TraumaWrapper(env, trauma_step=trauma_step)
+        env = Monitor(env, f'Proyecto/{SAVE_DIR}/dqn_results_{run + 1}')
 
         model = DQN(
             'MlpPolicy',
@@ -37,7 +42,7 @@ def main(n_runs: int = 30, n_timesteps: int = 600_000):
         env.close()
 
     # Save the model
-    model.save('Proyecto/data/dqn/dqn_model')
+    model.save(f'Proyecto/{SAVE_DIR}/dqn_model')
 
 
 def hyperparameter_search():
@@ -103,15 +108,20 @@ def hyperparameter_search():
     print(f'Average episode length (last 5): {best_score}')
 
 
-def plot_results():
-    lengths = load_lengths_from_csv_dir('Proyecto/data/dqn/')
+def plot_results(
+    min_length: int = 1500,
+    vertical_line: float | None = None,
+):
+    lengths_1 = load_lengths_from_csv_dir(
+        'Proyecto/data/test_dqn_normal/', column_length=min_length
+    )
+    lengths_2 = load_lengths_from_csv_dir('Proyecto/data/test_dqn_trauma', column_length=min_length)
     plot_learning_curves(
-        results={
-            'DQN': lengths,
-        },
+        results={'DQN sin trauma': lengths_1, 'DQN con trauma': lengths_2},
         title='DQN en MountainCar-v0',
         xlabel='Episodio',
         ylabel='Largo promedio de episodio',
+        vertical_line_x=len(lengths_1[0]) * vertical_line if vertical_line else None,
     )
 
 
@@ -130,4 +140,5 @@ def show_agent(agent_path: str, n_steps: int = 1000):
 
 
 if __name__ == '__main__':
-    main()
+    main(n_runs=3, n_timesteps=300_000, trauma_step=None)
+    plot_results(vertical_line=150_001 / 300_000)
